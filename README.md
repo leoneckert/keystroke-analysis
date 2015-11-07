@@ -1,5 +1,5 @@
 # keystroke-analysis
-caseyscarborough made [`keylogger`](https://github.com/caseyscarborough/keylogger) for mac. <br>
+caseyscarborough made [keylogger](https://github.com/caseyscarborough/keylogger) for mac. <br>
 adam harvey added nano second timestamps to it: https://github.com/adamhrv/keylogger<br>
 my script builds upon the keylogger's output file in csv format. 
 ## Usage
