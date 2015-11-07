@@ -102,7 +102,7 @@ def createDictionairies(usefulData):
 	if printInfo:
 		r = randint(0, len(dictionairies))   # documentation print purpose
 		iterator = 0
-		randomKey = 0
+		randomKey = usefulData[0][1] #initialize value, changed at random in for loop below
 		for key in dictionairies:
 			if iterator == r:
 				randomKey = key
@@ -137,7 +137,7 @@ def fillAllDictionairiesWithData(usefulData, dictionairies):
 	if printInfo:
 		r = randint(0, len(dictionairies)) # documentation print purpose
 		iterator = 0
-		randomKey = 0
+		randomKey = usefulData[0][1] #initialize value, changed at random in for loop below
 		for key in dictionairies:
 			if iterator == r:
 				randomKey = key
