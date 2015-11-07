@@ -1,15 +1,21 @@
 # keystroke-analysis
-caseyscarborough made [keylogger](https://github.com/caseyscarborough/keylogger) for mac. <br>
-adam harvey added nano second timestamps to it: https://github.com/adamhrv/keylogger<br>
-my script builds upon the keylogger's output file in csv format. 
+-> caseyscarborough made [keylogger](https://github.com/caseyscarborough/keylogger) for mac. <br>
+-> adam harvey added [nano second timestamps](https://github.com/adamhrv/keylogger) to it.<br><br>
+
+
+my script builds upon the keylogger's output file (with ns timestamps) in csv format. 
 ## Usage
 before capturing keystrokes to be used with my script, I recommend doing this:<br>
-open the keylogger.c file of keylogger<br>
-go to line 168<br>
-replace:<br>
-case 49:  return " ";<br>
-with<br>
-case 49:  return "[space]";<br><br>
+open the keylogger.c file of [keylogger](https://github.com/adamhrv/keylogger)<br>
+go to <b>line 168</b><br>
+replace:
+```bash
+case 49:  return " ";
+```
+with
+```bash
+case 49:  return "[space]";
+```
 
 
 
