@@ -5,6 +5,7 @@
 
 my script builds upon the keylogger's output file (with ns timestamps) in csv format. 
 ## Usage
+#Preperation
 before capturing keystrokes to be used with my script, I recommend doing this:<br>
 open the keylogger.c file of [keylogger](https://github.com/adamhrv/keylogger)<br>
 go to <b>line 168</b><br>
@@ -16,9 +17,7 @@ with
 ```bash
 case 49:  return "[space]";
 ```
-
-
-
+#Run this script
 1)<b>change the parameters in the settings file.</b> <br>
 2.1)<b>run script like this:</b> <br>
 ```bash
