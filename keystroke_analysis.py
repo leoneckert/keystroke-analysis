@@ -4,6 +4,8 @@ import csv
 import sys
 # to make tests
 from random import randint
+# for settings file
+import ConfigParser
 
 
 def retrieveRelevantLines(dataPath):
@@ -100,7 +102,7 @@ def createDictionairies(usefulData):
 	if printInfo:
 		r = randint(0, len(dictionairies))   # documentation print purpose
 		iterator = 0
-		randomKey = ""
+		randomKey = 0
 		for key in dictionairies:
 			if iterator == r:
 				randomKey = key
@@ -132,10 +134,10 @@ def fillAllDictionairiesWithData(usefulData, dictionairies):
 		#then we ad the difference betwween the next timestamp and the currently inspected one:
 		dictionairies.get(usefulData[i][1])[usefulData[i+1][1]].append(int(usefulData[i+1][0]) - int(usefulData[i][0])) 
 
-	if printInfo: 
+	if printInfo:
 		r = randint(0, len(dictionairies)) # documentation print purpose
 		iterator = 0
-		randomKey = ""
+		randomKey = 0
 		for key in dictionairies:
 			if iterator == r:
 				randomKey = key
@@ -178,7 +180,7 @@ def removeLongDurations(dictionairies, threshold):  #threshold in seconds
 
 				countk = countk + 1
 
-				if (k/1000000000 > int(threshold)):
+				if (k/1000000000 > int(threshold)-1):  #-1 because if the value is 0, it returns all times under 1 second
 					countTooBig = countTooBig + 1
 
 					durationsNeedToRemove.append(k)  #...collecting here
@@ -236,7 +238,7 @@ def removeLongDurations(dictionairies, threshold):  #threshold in seconds
 	return dictionairies
 
 
-def replaceMultipleDurationByAverage(dictionairies):
+def replaceMultipleDurationByAverage(dictionairies, floatType):
 	# condense arrays with multiple duration values down to their average:
 	countLongArrays = 0			#docu purposes
 	for i in dictionairies.values():
@@ -248,8 +250,11 @@ def replaceMultipleDurationByAverage(dictionairies):
 				valueSum = 0
 				for k in range(arrayLength):  #adding all the values in one array up
 					valueSum = valueSum + j[k]
-			
-				averageValue = valueSum/arrayLength  #then taking the avergae
+				if floatType == True:
+					averageValue = float(valueSum)/arrayLength  #then taking the avergae
+				else:
+					averageValue = valueSum/arrayLength  #then taking the avergae
+				
 
 				for k in range(arrayLength - 1):  #popping all, but one value out of the array
 					j.pop()
@@ -260,6 +265,10 @@ def replaceMultipleDurationByAverage(dictionairies):
 		print ""
 		print "[+] In " + str(countLongArrays) + " duration value arrays, there was more than 1 value."
 		print "[ ] In all those cases, took the average of all the values, and set this as the duration value array's only value."
+		if floatType == True:
+			print "[ ] Data type of the average values: float (this can be modified in the settings)."
+		else:
+			print "[ ] Data type of the average values: integer (this can be modified in the settings)."
 		printNumberMDentries(dictionairies)
 		printNumberKEYentries(dictionairies)
 		printNumberDurationValues(dictionairies)
@@ -267,7 +276,7 @@ def replaceMultipleDurationByAverage(dictionairies):
 
 	return dictionairies	
 
-def createDataArrayOfArrays(dictionairies, allKeyStrokes, timeConversion):
+def createDataArrayOfArrays(dictionairies, allKeyStrokes, timeConversion, floatType):
 
 	#into the array we dont put any header values, we only need the allKeyStrokes array to get its length
 	keyStrokeLengths = len(allKeyStrokes)
@@ -290,7 +299,12 @@ def createDataArrayOfArrays(dictionairies, allKeyStrokes, timeConversion):
 			for j in range(keyStrokeLengths):
 				# if yes, we append the value connected to that key.
 				if allKeyStrokes[j] in dictionairies.get(allKeyStrokes[i]):
-					tempArray.append((dictionairies.get(allKeyStrokes[i]).get(allKeyStrokes[j])[0]/timeConversion))
+					if floatType == True:
+						timeInNano = float(dictionairies.get(allKeyStrokes[i]).get(allKeyStrokes[j])[0])
+					else:
+						timeInNano = dictionairies.get(allKeyStrokes[i]).get(allKeyStrokes[j])[0]
+
+					tempArray.append((timeInNano/timeConversion))
 				else:
 					tempArray.append("-")
 		else:
@@ -300,11 +314,43 @@ def createDataArrayOfArrays(dictionairies, allKeyStrokes, timeConversion):
 	
 		# after filleing the temoArray for the while row, we append it to the official outPutArray
 		outPutArray.append(tempArray)
-	if printInfo: 
+	if printInfo:
+		print ""
 		print "[+] created an output array that carries one array for each KEY entries holding all the average duration values an '-' where no record has been made."
+		if floatType == True:
+			print "[ ] Data type of the duration values: float (this can be modified in the settings)."
+		else:
+			print "[ ] Data type of the duration values: integer (this can be modified in the settings)."
+		print ""
 	# this is the product of all above calculation
 	# below further function to format, present and export this product in different ways
 	return outPutArray
+
+def printMinAndMaxValue(outPutArray):
+	maxim = 0
+	for i in outPutArray:
+		for j in i:
+			if j > maxim and j != "-":
+				maxim = j
+	minim = maxim
+	for i in outPutArray:
+		for j in i:
+			if j < minim and j != "-":
+				minim = j
+	if outPutArraryTimeFormat == 1:
+		format = 'nanoseconds'
+	elif outPutArraryTimeFormat == 1000:
+		format = 'microseconds'
+	elif outPutArraryTimeFormat == 1000000:
+		format = 'milliseconds'
+	elif outPutArraryTimeFormat == 1000000000:
+		format = 'nanoseconds'
+	else:
+		format = 'time format: undefined'
+	print ""
+	print "[+] The HIGHEST value in the outPutArray is: " + str(maxim) + " (" + format + ")"
+	print "[+] The LOWEST value in the outPutArray is: " + str(minim) + " (" + format + ")"
+	print ""
 
 
 
@@ -360,17 +406,49 @@ def printNumberDurationValues(dictionairies):
 
 
 
-# if true, every step is printed into the Terminal
+# THESE ARE DEFAULT SETTING, change them in the settings file
 printInfo = True
+outPutArraryTimeFormat = 1 
+outPutArrayFloatType = False 
+printTableToTerminalSetting = False
+maxSecondsBetweenKeyStrokes = 2
+
+
 
 def Main():
-	
-	# run like this 
-	# python kl_analysis_2.py keystroke_long.csv 
+	# run script like this: 
+	# 			python keystroke_analysis.py keystrokes.csv
+	#
 	# in order to export to file run like this:
-	# # python kl_analysis_2.py keystroke_long.csv outFile.csv
-	file_to_analyse = sys.argv[1]
+	# 			python keystroke_analysis.py keystrokes.csv outFile.csv
 
+	#declaring as global so we can change through settings
+	global printInfo
+	global outPutArraryTimeFormat
+	global outPutArrayFloatType
+	global printTableToTerminalSetting
+	global maxSecondsBetweenKeyStrokes
+
+	# first reading the settings
+	config = ConfigParser.ConfigParser()
+	try:
+		config.read('settings.cfg')
+		if (config.get('settings','printInfo') == 'False'):
+			printInfo = False
+		outPutArraryTimeFormat = int(config.get('settings','outPutArraryTimeFormat'))
+		if (config.get('settings','outPutArrayFloatType') == 'True'):
+			outPutArrayFloatType = True
+		if (config.get('settings','printTableToTerminalSetting') == 'True'):
+			printTableToTerminalSetting = True
+		maxSecondsBetweenKeyStrokes = int(config.get('settings','maxSecondsBetweenKeyStrokes'))
+
+		if printInfo:
+			print "[+] Read settings"
+	except:
+		print "[-] Could not read settings"
+
+	
+	file_to_analyse = sys.argv[1]
 
 	usefulData = retrieveRelevantLines(file_to_analyse)
 
@@ -380,11 +458,8 @@ def Main():
 	dictionairies = createDictionairies(usefulData)
 	dictionairies = fillAllDictionairiesWithData(usefulData, dictionairies)
 
-
-	dictionairies = removeLongDurations(dictionairies, 2)
-
-
-	dictionairies = replaceMultipleDurationByAverage(dictionairies)
+	dictionairies = removeLongDurations(dictionairies, maxSecondsBetweenKeyStrokes) #threshold value in seconds
+	dictionairies = replaceMultipleDurationByAverage(dictionairies, outPutArrayFloatType)
 
 	allKeyStrokesFromScript = ["a","s","d","f","h","g","z","x","c","v","b","q","w","e","r","y","t","1","2","3","4","6","5","=","9","7","-","8","0","]","o","u","[","i","p","l","j","'","k",",","\\",",","/","n","m",".","`","[decimal]","[asterisk]","[plus]","[clear]","[divide]","[enter]","[hyphen]","[equals]","0","1","2","3","4","5","6","7","8","9","[return]","[tab]","[space]","[del]","[esc]","[cmd]","[shift]","[caps]","[option]","[ctrl]","[shift]","[option]","[ctrl]","[fn]","[f17]","[volup]","[voldown]","[mute]","[f18]","[f19]","[f20]","[f5]","[f6]","[f7]","[f3]","[f8]","[f9]","[f11]","[f13]","[f16]","[f14]","[f10]","[f12]","[f15]","[help]","[home]","[pgup]","[fwddel]","[f4]","[end]","[f2]","[pgdown]","[f1]","[left]","[right]","[down]","[up]"]
 	allKeyStrokes = []
@@ -394,10 +469,12 @@ def Main():
 			allKeyStrokes.append(i)
 
 
-	outArray = createDataArrayOfArrays(dictionairies, allKeyStrokes, 1) #1 for nanoseconds, 1000000000 for seconds
-	
+	outArray = createDataArrayOfArrays(dictionairies, allKeyStrokes, outPutArraryTimeFormat, outPutArrayFloatType) 
+	if printInfo:
+		printMinAndMaxValue(outArray)
 
-	printTableToTerminal(outArray, allKeyStrokes)
+	if printTableToTerminalSetting:
+		printTableToTerminal(outArray, allKeyStrokes)
 
 	try:
 		if(sys.argv[2]):
