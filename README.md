@@ -3,7 +3,7 @@
 -> adam harvey added [nano second timestamps](https://github.com/adamhrv/keylogger) to it.<br><br>
 
 
-my script builds upon the keylogger's output file (with ns timestamps) in csv format. 
+my script builds upon the keylogger's output file (with ns timestamps) in csv format. It creates visual keystroke fingerprints.
 ## Usage
 ###Preparation
 before capturing keystrokes to be used with my script, I recommend doing this:<br>
