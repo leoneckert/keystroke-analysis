@@ -12,3 +12,9 @@ my script builds upon the keylogger's output file in csv format.
 
 
 ![alt tag](https://raw.github.com/leoneckert/keystroke-analysis/master/raw_fingerprint.png)
+
+<br>
+[+] To do:<br>
+- At the moment I am experimenting with different ways of visualising the output table through processing. The aim is a visual representation of ones keystroke fingerprint that can be compared with others.<br>
+- ultimately it would be nice to have a small web application i which a user types while the fingerprint is generated live.<br>
+- ... 
