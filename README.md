@@ -39,5 +39,5 @@ $ python keystroke_analysis.py keystrokes.csv outFile.csv
 
 - At the moment I am experimenting with different ways of visualising the output table through processing. The aim is a visual representation of ones keystroke fingerprint that can be compared with others.<br>
 - An extension is planned that allows to compare (subtract) fingerprints from each other aiming for recognition.<br>
-- ultimately it would be nice to have a small web application in which a user types while the fingerprint is generated live.<br>
+- ultimately it would be nice to have a small web application in which a user types while the fingerprint is generated live. [Here](http://itp.leoneckert.com/icm/finals_mockup/1/) is a rough mockup.<br>
 - ... 
