@@ -1,4 +1,4 @@
-
+# i don  think this is needed anymore
 data = open("out.csv", "rU")
 
 outDict = ""

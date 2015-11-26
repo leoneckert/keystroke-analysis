@@ -16,6 +16,10 @@ def retrieveRelevantLines(dataPath):
 		splitrows = row.split(",")  # putting the lines from the log file into the array.
 		if len(splitrows) == 3 and splitrows[2] != "[unknown]\n":		# Making sure only the useful lines (not the data when log was started etc) are included.			
 			usefulData.append(splitrows)
+		if len(splitrows) == 4: #split works funnily if the key is a ',' itself, here is the fix:
+			splitrows.pop()
+			splitrows[2] = ','
+			usefulData.append(splitrows)
 	
 	count = 0  #for printing documentation purpose
 
@@ -264,6 +268,41 @@ def replaceMultipleDurationByAverage(dictionairies, floatType):
 	return dictionairies	
 
 def convertStringsToKeyCode(dictionairies):
+	with open('allKeysLogged.json', 'r') as allKeys:
+		keysLogged = json.load(allKeys)
+	# for i in dictionairies:
+	# 	print i
+	# 	if i in keysLogged:
+	# 		# print keysLogged[i]
+	# 		# print "NOOOOOOO"
+	# 		# i = keysLogged[i]
+	# 		dictionairies[keysLogged[i]] = dictionairies.pop(i)
+	for i in keysLogged:
+		# print i
+		if i in dictionairies:
+			# print "yes"
+			# print i 
+			# print keysLogged[i]
+			dictionairies[keysLogged[i]] = dictionairies.pop(i)
+	for i in dictionairies:
+		# print i
+		# print dictionairies[i]
+		for j in keysLogged:
+			# print j
+			if j in dictionairies[i]:
+				# print j
+				dictionairies[i][keysLogged[j]] = dictionairies[i].pop(j)
+		# print i
+		# print dictionairies[i]
+	
+				
+
+			
+
+	# print"------"
+	# for i in dictionairies:
+	# 	print i
+	return dictionairies
 	
 
 def Main():	
@@ -283,7 +322,7 @@ def Main():
 				# print "      " + str(k)
 				accuracy = accuracy + 1
 	dictionairies = replaceMultipleDurationByAverage(dictionairies, True)
-	
+	dictionairies = convertStringsToKeyCode(dictionairies)
 	
 
 	
@@ -298,7 +337,7 @@ def Main():
 	output['accuracy'] = accuracy
 	output['data'] = dictionairies
 	
-	json_data = json.dumps(dictionairies)
+	json_data = json.dumps(dictionairies) # change this to "output" in the brakcets once accuracy is supported
 	parsed = json.loads(json_data)
 	print json.dumps(parsed, indent=4, sort_keys=True)
 
