@@ -6,6 +6,7 @@ import sys
 from random import randint
 # for settings file
 import ConfigParser
+import json
 
 
 def retrieveRelevantLines(dataPath):
@@ -477,6 +478,7 @@ def Main():
 
 	if printTableToTerminalSetting:
 		printTableToTerminal(outArray, allKeyStrokes)
+
 
 	try:
 		if(sys.argv[2]):
