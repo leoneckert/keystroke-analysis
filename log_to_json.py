@@ -145,6 +145,7 @@ def fillAllDictionairiesWithData(usefulData, dictionairies):
 	# 	printNumberDurationValues(dictionairies)		
 	# 	print ""
 
+
 	return dictionairies
 
 def removeLongDurations(dictionairies, threshold):  #threshold in seconds
@@ -187,11 +188,19 @@ def removeLongDurations(dictionairies, threshold):  #threshold in seconds
 		
 		if keyValuePairNeedToRemove != []:
 			for j in keyValuePairNeedToRemove:
-				dictionairies[i].pop(j, None)   # and here again with empty array
+				dictionairies[i].pop(j, None)   # and here again with empty array.
 
 		for j in dictionairies[i]:
 			if dictionairies[i].get(j) == []:
 				print "STILL EMPTY!"
+
+	# and here we remove empty key value pairs in dictionairy 
+	firstLevelKeysToRemove = []
+	for i in dictionairies:
+		if dictionairies[i] == {}:
+			firstLevelKeysToRemove.append(i)
+	for i in range(len(firstLevelKeysToRemove)):
+		dictionairies.pop(firstLevelKeysToRemove[i], None)   # and here again with empty array
 
 
 	# if printInfo:
@@ -264,7 +273,7 @@ def replaceMultipleDurationByAverage(dictionairies, floatType):
 	# 	printNumberKEYentries(dictionairies)
 	# 	printNumberDurationValues(dictionairies)
 	# 	print ""
-
+ 
 	return dictionairies	
 
 def convertStringsToKeyCode(dictionairies):
@@ -294,10 +303,6 @@ def convertStringsToKeyCode(dictionairies):
 				dictionairies[i][keysLogged[j]] = dictionairies[i].pop(j)
 		# print i
 		# print dictionairies[i]
-	
-				
-
-			
 
 	# print"------"
 	# for i in dictionairies:
@@ -340,6 +345,10 @@ def Main():
 	json_data = json.dumps(dictionairies) # change this to "output" in the brakcets once accuracy is supported
 	parsed = json.loads(json_data)
 	print json.dumps(parsed, indent=4, sort_keys=True)
+	with open('myCompressedKeyprint.json', 'w') as outfile:
+		json.dump(parsed, outfile, indent=4, sort_keys=True)
+		
+
 
 if __name__ == '__main__':
 	Main()
