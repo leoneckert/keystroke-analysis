@@ -342,7 +342,7 @@ def Main():
 	output['accuracy'] = accuracy
 	output['data'] = dictionairies
 	
-	json_data = json.dumps(dictionairies) # change this to "output" in the brakcets once accuracy is supported
+	json_data = json.dumps(output) # change this to "output" in the brakcets once accuracy is supported
 	parsed = json.loads(json_data)
 	print json.dumps(parsed, indent=4, sort_keys=True)
 	with open('myCompressedKeyprint.json', 'w') as outfile:

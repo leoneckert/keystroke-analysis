@@ -1,5 +1,6 @@
 .DS_Store
 keystrokes.csv
+keystrokes.log
 keystrokes_new_script.csv
 out.csv
 screenshots
